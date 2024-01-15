@@ -9,25 +9,19 @@ package hangman;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
-import javax.swing.ImageIcon;
-
 import java.awt.FontMetrics;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import java.util.ArrayList;
@@ -47,13 +41,15 @@ public class Hangman implements ActionListener, KeyListener {
 	final private static ArrayList<String> LETTERS = new ArrayList<String>();
 	
 	private Set<Character> guessedLetters = new HashSet<>();
-	private Set<Character> secLetters = new HashSet<>();
 
-	final private static int NUMBER_OF_GUESSES = 6;
+	final private static int TOTAL_NUMBER_OF_GUESSES = 6;
 	
 	private static String secret_word;
 	
 	private static int guesses_left = 6;
+	
+	private static boolean userWon = false;
+	private static boolean userLost = false;
 	
 	JButton newGameButton;
 	JPanel drawingPanel;
@@ -236,7 +232,6 @@ public class Hangman implements ActionListener, KeyListener {
                 g.drawString(letterString, x, getHeight() - 20);
 
                 // Move the position for the next letter
-//                x += fontMetrics.stringWidth(letterString) + 5; // Move 14 pixels for the next letter
                 x += letterWidth;
             }
         }
@@ -254,28 +249,26 @@ public class Hangman implements ActionListener, KeyListener {
             	currentWord += "?";
             }
         }
+        
         return currentWord;
     }
     
-    // Replace this method with your logic to get the current game status
     private String getCurrentGameStatus() {
-        // Replace this with your logic to get the current game status
-        return guesses_left + " guesses left";
+    	String status;
+    	
+    	if (userWon) {
+    		status = "You won with " + guesses_left + " guesses left!";
+    	} else if (userLost) {
+    		status = "You lost! (" + secret_word + ")";
+    	} else {
+    		status = guesses_left + " guesses left";
+    	}
+
+        return status;
     }
     
-    // Replace this method with your logic to check if the letter is guessed
     private boolean isLetterGuessed(char letter) {
-        // Replace this with your logic to check if the letter is guessed
         return guessedLetters.contains(letter);
-    }
-
-    /**
-	 * @method showScoreInfo
-     * @brief Shows results after the game.
-     */
-    private void showScoreInfo() {
-    	
-    	
     }
     
     /**
@@ -289,6 +282,29 @@ public class Hangman implements ActionListener, KeyListener {
         return random.nextInt(arrayLength);
     }
     
+    private boolean isWordGuessed() {
+    	
+    	for (int i = 0; i < secret_word.length(); i++) {
+            char currentChar = secret_word.charAt(i);
+            if (!isLetterGuessed(currentChar)) {
+            	return false;
+            }
+        }
+    	return true;
+    }
+    
+    
+    private void startNewGame(){
+    	guessedLetters.clear();
+    	guesses_left = TOTAL_NUMBER_OF_GUESSES;
+    	userLost = false;
+    	userWon = false;
+    	secret_word = SECRET_WORDS.get(getRandomIndex(SECRET_WORDS.size()));
+    	drawingPanel.repaint();
+    	frame.requestFocus();
+    }
+    
+    
     /**
      * @method actionPerformed
      * @brief Handles action events.
@@ -299,9 +315,8 @@ public class Hangman implements ActionListener, KeyListener {
 
 		// if the New Game button is clicked
 		if(e.getSource()==newGameButton) {
+			startNewGame();
 			
-			
-
 		}
 		
 	}
@@ -321,7 +336,7 @@ public class Hangman implements ActionListener, KeyListener {
 		// Get the typed character
         char typedChar = e.getKeyChar();
 
-        // Check if the typed character is a lowercase letter
+        // Check if the typed character is a lower case letter
         if (Character.isLowerCase(typedChar)) {
             // Process the guess (you need to implement this method)
             processGuess(typedChar);
@@ -333,28 +348,35 @@ public class Hangman implements ActionListener, KeyListener {
 	}
 	
 	// Implement the processGuess method based on your game logic
-    private void processGuess(char guess) {
-        // Update the game state based on the guessed letter
-        // For example, add the guessed letter to the set of guessed letters
-        guessedLetters.add(guess);
-        
-        // Add your game logic here...
-
-        // Check if the guessed letter is in the secret word
-        // Update gameStatusLabel, guesses_left, etc.
-        
-        guesses_left--;
+    private void processGuess(char letter) {
+    	
+    	boolean gameOver = userLost || userWon;
+    	
+    	if (!isLetterGuessed(letter) && !gameOver) {
+    		guessedLetters.add(letter);
+    		
+    		if (!secret_word.contains(String.valueOf(letter)) ) {
+            	guesses_left--;
+            } 
+    	}
+    	
+    	if (isWordGuessed()) {
+    		userWon = true; // game is over
+    	}
+    	
+        if (guesses_left == 0) {
+        	userLost = true; // game is over
+        }
+         
     }
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
