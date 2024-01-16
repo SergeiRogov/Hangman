@@ -194,7 +194,7 @@ public class HangmanGUI implements ActionListener, KeyListener {
          */
         private void displayCurrentWord(Graphics g, String currentWord) {
             // Set font and color for the current word display
-            Font font = new Font(null, Font.PLAIN, 16);
+            Font font = new Font(null, Font.BOLD, 18);
             g.setFont(font);
             g.setColor(Color.BLACK);
 
@@ -216,7 +216,7 @@ public class HangmanGUI implements ActionListener, KeyListener {
          */
         private void displayGameStatus(Graphics g) {
             // Set font and color for the game status display
-            Font font = new Font(null, Font.PLAIN, 16);
+            Font font = new Font(null, Font.BOLD, 18);
             g.setFont(font);
             g.setColor(Color.BLACK);
 
@@ -238,7 +238,7 @@ public class HangmanGUI implements ActionListener, KeyListener {
          */
         private void displayAlphabet(Graphics g) {
             // Set font for the alphabet display
-            Font font = new Font(null, Font.PLAIN, 16);
+            Font font = new Font(null, Font.BOLD, 18);
             g.setFont(font);
 
             int letterWidth = 14; // assume this letter width for all letters
@@ -263,7 +263,7 @@ public class HangmanGUI implements ActionListener, KeyListener {
 
                 // Draw the letter
                 String letterString = String.valueOf(letter);
-                g.drawString(letterString, x, getHeight() - 20);
+                g.drawString(letterString, x, getHeight() - 20); // 20 pixels from the bottom
 
                 // Move position 
                 x += letterWidth;

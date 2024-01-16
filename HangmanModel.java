@@ -94,7 +94,7 @@ public class HangmanModel {
      * @brief Getter method for number of guesses left.
      * @return Number of guesses left.
      */
-    public int getGuessesLeft() {
+    protected int getGuessesLeft() {
         return guesses_left;
     }
 
@@ -104,7 +104,7 @@ public class HangmanModel {
      * @param letter Character to check.
      * @return <code>true</code> if letter was already guessed, <code>false</code> otherwise.
      */
-    public boolean isLetterGuessed(char letter) {
+    protected boolean isLetterGuessed(char letter) {
         return guessedLetters.contains(letter);
     }
 
@@ -113,7 +113,7 @@ public class HangmanModel {
      * @brief Checks if the word is guessed.
      * @return <code>true</code> if word is guessed, <code>false</code> otherwise.
      */
-    public boolean isWordGuessed() {
+    protected boolean isWordGuessed() {
         for (int i = 0; i < secret_word.length(); i++) {
             char currentChar = secret_word.charAt(i);
             if (!isLetterGuessed(currentChar)) {
